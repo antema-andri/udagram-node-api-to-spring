@@ -68,9 +68,7 @@ public class UdagramRestController {
 	 */
 	@GetMapping(value = "/feed")
 	public ResponseEntity<?> getAllUsers() {
-		Collection<FeedItem> feedItems = feedItemServiceImpl.getList();
-		ResponseFeeds responseFeeds = new ResponseFeeds(feedItems.size(), feedItems);
-		return ResponseEntity.ok(responseFeeds);
+		return feedItemServiceImpl.getAllUsers();
 	}
 	
 	/*

@@ -14,12 +14,14 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
 
 import com.udagram.app.dao.FeedItemRepository;
 import com.udagram.app.entities.FeedItem;
 import com.udagram.app.exceptions.FileStorageException;
+import com.udagram.app.request.ResponseFeeds;
 
 @Service
 public class FeedItemServiceImpl implements FeedItemService{
@@ -29,6 +31,12 @@ public class FeedItemServiceImpl implements FeedItemService{
 	private HostServiceImpl hostServiceImpl;
 	
 	private static final Logger logger = LogManager.getLogger(FeedItemServiceImpl.class);
+	
+	public ResponseEntity<?> getAllUsers() {
+		Collection<FeedItem> feedItems = this.getList();
+		ResponseFeeds responseFeeds = new ResponseFeeds(feedItems.size(), feedItems);
+		return ResponseEntity.ok(responseFeeds);
+	}
 	
 	@Override
 	public Collection<FeedItem> getList() {
