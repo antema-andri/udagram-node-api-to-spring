@@ -26,7 +26,7 @@ public class FeedItemServiceImpl implements FeedItemService{
 	@Autowired
 	private FeedItemRepository feedItemRepository;
 	@Autowired
-	private HostServiceImpl hostServiceImpl;
+	private HostService hostService;
 	
 	private static final Logger logger = LogManager.getLogger(FeedItemServiceImpl.class);
 	
@@ -40,21 +40,21 @@ public class FeedItemServiceImpl implements FeedItemService{
 		FeedItem feedItem =new FeedItem();
 		feedItem.setCaption(feedItemInfo.getCaption());
 		String imgName = feedItemInfo.getUrl();
-		feedItem.setUrl(hostServiceImpl.getImageUrl(imgName));
+		feedItem.setUrl(hostService.getImageUrl(imgName));
 		feedItem.setCreatedAt(new Date());
 		feedItem.setUpdatedAt(new Date());
 		return feedItemRepository.save(feedItem);
 	}
 	
 	public String getSignedUrl(String imageName) {
-		String signedUrl = hostServiceImpl.getUrl("/upload/storage/"+imageName);
+		String signedUrl = hostService.getUrl("/upload/storage/"+imageName);
 		return signedUrl.replace(" ", "");
 	}
 	
 	@Override
 	public void uploadImage(String imageName, InputStream fileInputStream) {
 		try {
-			String pathFile = hostServiceImpl.pathUploadFile() + imageName;
+			String pathFile = hostService.pathUploadFile() + imageName;
 			File targetFile = new File(pathFile);
 			java.nio.file.Files.copy(fileInputStream, targetFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
 			IOUtils.closeQuietly(fileInputStream);
