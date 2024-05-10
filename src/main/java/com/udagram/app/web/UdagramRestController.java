@@ -1,6 +1,7 @@
 package com.udagram.app.web;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.HashMap;
 
@@ -25,18 +26,20 @@ import com.udagram.app.request.FeedRequest;
 import com.udagram.app.request.ResponseAuth;
 import com.udagram.app.request.ResponseFeeds;
 import com.udagram.app.request.UserRequest;
+import com.udagram.app.service.AccountUserService;
 import com.udagram.app.service.AccountUserServiceImpl;
+import com.udagram.app.service.FeedItemService;
 import com.udagram.app.service.FeedItemServiceImpl;
 
 @RestController
 public class UdagramRestController {
 	@Autowired
-	private AccountUserServiceImpl accountUserServiceImpl;
+	private AccountUserService accountUserService;
 	@Autowired
-	private FeedItemServiceImpl feedItemServiceImpl;
+	private FeedItemService feedItemServiceImpl;
 	
 	public UdagramRestController(AccountUserServiceImpl accountUserServiceImpl) {
-		this.accountUserServiceImpl = accountUserServiceImpl;
+		this.accountUserService = accountUserServiceImpl;
 	}
 	
 	/*
@@ -44,7 +47,7 @@ public class UdagramRestController {
 	 */
 	@RequestMapping(value="/users/auth/login",method=RequestMethod.POST)
 	public ResponseEntity<?> authenticateUser(@RequestBody UserRequest loginRequest) {
-		HashMap<String, Object> hashMapAuth = accountUserServiceImpl.authenticate(loginRequest.getEmail(), loginRequest.getPassword());
+		HashMap<String, Object> hashMapAuth = accountUserService.authenticate(loginRequest.getEmail(), loginRequest.getPassword());
 		ResponseAuth responseAuth = new ResponseAuth((String) hashMapAuth.get("token"), (User) hashMapAuth.get("user"));
 		return ResponseEntity.ok(responseAuth);
 	}
@@ -55,7 +58,7 @@ public class UdagramRestController {
 	@RequestMapping(value="/users/auth", method=RequestMethod.POST)
 	public ResponseEntity<?> saveUser(@RequestBody UserRequest userRequest) {
 		String errMsg = "User already exists";
-		HashMap<String, Object> hashMapAuth = accountUserServiceImpl.registerAuth(userRequest.getEmail(), userRequest.getPassword());
+		HashMap<String, Object> hashMapAuth = accountUserService.registerAuth(userRequest.getEmail(), userRequest.getPassword());
 		if(hashMapAuth != null) {
 			ResponseAuth responseAuth = new ResponseAuth((String) hashMapAuth.get("token"), (User) hashMapAuth.get("user"));
 			return ResponseEntity.ok(responseAuth);
@@ -68,7 +71,9 @@ public class UdagramRestController {
 	 */
 	@GetMapping(value = "/feed")
 	public ResponseEntity<?> getAllUsers() {
-		return feedItemServiceImpl.getAllUsers();
+		Collection<FeedItem> feedItems = feedItemServiceImpl.getList();
+		ResponseFeeds responseFeeds = new ResponseFeeds(feedItems.size(), feedItems);
+		return ResponseEntity.ok(responseFeeds);
 	}
 	
 	/*
@@ -108,7 +113,7 @@ public class UdagramRestController {
 	 * Get the image url
 	 */
 	@GetMapping(path="/image/{image_name}", produces=MediaType.IMAGE_JPEG_VALUE)
-	public byte[] getImageByName(@PathVariable(name="image_name") String image) {
+	public byte[] getImageByName(@PathVariable(name="image_name") String image) throws IOException, URISyntaxException {
 		return feedItemServiceImpl.getImageByname(image);
 	}
 	

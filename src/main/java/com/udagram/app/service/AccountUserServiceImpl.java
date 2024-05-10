@@ -46,6 +46,7 @@ public class AccountUserServiceImpl implements AccountUserService {
 		return userRepository.save(user);
 	}
 	
+	@Override
 	public HashMap<String, Object> authenticate(String login, String password) {
 		Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(login, password));
 		SecurityContextHolder.getContext().setAuthentication(authentication);
