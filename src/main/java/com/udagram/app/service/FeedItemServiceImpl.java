@@ -67,7 +67,6 @@ public class FeedItemServiceImpl implements FeedItemService{
 			java.nio.file.Files.copy(fileInputStream, targetFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
 			IOUtils.closeQuietly(fileInputStream);
 		} catch(IOException e) {
-			e.printStackTrace();
 			throw new FileStorageException("File not found");
 		}
 	}

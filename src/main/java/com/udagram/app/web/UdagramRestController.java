@@ -100,12 +100,8 @@ public class UdagramRestController {
 	 * Upload file
 	 */
 	@PutMapping(value="/upload/storage/{image_name}")
-	public void upload(@PathVariable(name="image_name") String image, HttpServletRequest request) {
-		try {
-			feedItemServiceImpl.uploadImage(image, request.getInputStream());
-		} catch (IOException e) {
-			System.out.println(e.getMessage());
-		}
+	public void upload(@PathVariable(name="image_name") String image, HttpServletRequest request) throws IOException {
+		feedItemServiceImpl.uploadImage(image, request.getInputStream());
 	}
 	
 	/*

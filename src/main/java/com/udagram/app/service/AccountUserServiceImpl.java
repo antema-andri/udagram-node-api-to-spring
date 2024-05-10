@@ -9,6 +9,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,7 +31,7 @@ public class AccountUserServiceImpl implements AccountUserService {
 	@Autowired
 	private AuthenticationManager authenticationManager;
 	@Autowired
-	private UserDetailsServiceImpl userDetailsServiceImpl;
+	private UserDetailsService userDetailsService;
 	
 	/*
 	 * return new user if note exist
@@ -48,7 +49,7 @@ public class AccountUserServiceImpl implements AccountUserService {
 	public HashMap<String, Object> authenticate(String login, String password) {
 		Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(login, password));
 		SecurityContextHolder.getContext().setAuthentication(authentication);
-		UserDetails userDetails = userDetailsServiceImpl.loadUserByUsername(login);
+		UserDetails userDetails = userDetailsService.loadUserByUsername(login);
 		String token=Jwts.builder()
 				.setSubject(userDetails.getUsername())
 				.claim("authorities", userDetails.getAuthorities())
