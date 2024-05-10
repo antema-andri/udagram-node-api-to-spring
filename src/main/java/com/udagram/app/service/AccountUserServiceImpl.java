@@ -71,7 +71,6 @@ public class AccountUserServiceImpl implements AccountUserService {
 	public HashMap<String, Object> registerAuth(String login, String password) {
 		User newUser = createUser(new User(null, login, password, new Date(), new Date()));
 		if(newUser != null) {
-			//Authenticate the new user
 			HashMap<String, Object> hashMapAuth = authenticate(newUser.getEmail(), password);
 			return hashMapAuth;
 		}
