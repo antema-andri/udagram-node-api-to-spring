@@ -27,7 +27,6 @@ import com.udagram.app.request.ResponseAuth;
 import com.udagram.app.request.ResponseFeeds;
 import com.udagram.app.request.UserRequest;
 import com.udagram.app.service.AccountUserService;
-import com.udagram.app.service.AccountUserServiceImpl;
 import com.udagram.app.service.FeedItemService;
 
 @RestController
@@ -35,10 +34,10 @@ public class UdagramRestController {
 	@Autowired
 	private AccountUserService accountUserService;
 	@Autowired
-	private FeedItemService feedItemServiceImpl;
+	private FeedItemService feedItemService;
 	
-	public UdagramRestController(AccountUserServiceImpl accountUserServiceImpl) {
-		this.accountUserService = accountUserServiceImpl;
+	public UdagramRestController(AccountUserService accountUserService) {
+		this.accountUserService = accountUserService;
 	}
 	
 	/*
@@ -70,7 +69,7 @@ public class UdagramRestController {
 	 */
 	@GetMapping(value = "/feed")
 	public ResponseEntity<?> getAllUsers() {
-		Collection<FeedItem> feedItems = feedItemServiceImpl.getList();
+		Collection<FeedItem> feedItems = feedItemService.getList();
 		ResponseFeeds responseFeeds = new ResponseFeeds(feedItems.size(), feedItems);
 		return ResponseEntity.ok(responseFeeds);
 	}
@@ -86,7 +85,7 @@ public class UdagramRestController {
 		}
 		
 		FeedItem feedItemInfo = new FeedItem(null, feedRequest.getCaption(), feedRequest.getUrl(), null, null);
-		FeedItem newFeed = feedItemServiceImpl.save(feedItemInfo);
+		FeedItem newFeed = feedItemService.save(feedItemInfo);
 		return ResponseEntity.ok(newFeed);
 	}
 	
@@ -95,7 +94,7 @@ public class UdagramRestController {
 	 */
 	@RequestMapping(path = "/feed/signed-url/{image_name}",  method=RequestMethod.GET)
 	public ResponseEntity<?> getSignedUrlToUpload(@PathVariable(name="image_name") String image, HttpServletRequest request) {
-		String signedUrl = feedItemServiceImpl.getSignedUrl(image);
+		String signedUrl = feedItemService.getSignedUrl(image);
 		System.out.println(signedUrl);
 		return ResponseEntity.ok("{\"url\":\""+ signedUrl +"\"}");
 	}
@@ -105,7 +104,7 @@ public class UdagramRestController {
 	 */
 	@PutMapping(value="/upload/storage/{image_name}")
 	public void upload(@PathVariable(name="image_name") String image, HttpServletRequest request) throws IOException {
-		feedItemServiceImpl.uploadImage(image, request.getInputStream());
+		feedItemService.uploadImage(image, request.getInputStream());
 	}
 	
 	/*
@@ -113,7 +112,7 @@ public class UdagramRestController {
 	 */
 	@GetMapping(path="/image/{image_name}", produces=MediaType.IMAGE_JPEG_VALUE)
 	public byte[] getImageByName(@PathVariable(name="image_name") String image) throws IOException, URISyntaxException {
-		return feedItemServiceImpl.getImageByname(image);
+		return feedItemService.getImageByname(image);
 	}
 	
 }
