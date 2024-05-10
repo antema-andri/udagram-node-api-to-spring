@@ -29,7 +29,6 @@ import com.udagram.app.request.UserRequest;
 import com.udagram.app.service.AccountUserService;
 import com.udagram.app.service.AccountUserServiceImpl;
 import com.udagram.app.service.FeedItemService;
-import com.udagram.app.service.FeedItemServiceImpl;
 
 @RestController
 public class UdagramRestController {
