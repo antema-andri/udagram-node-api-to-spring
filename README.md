@@ -2,4 +2,4 @@
 
 
 # Ionic frontend
-https://github.com/antemaIT/monolith-udagram/tree/master/udagram-frontend
+https://github.com/antema-andri/monolith-udagram/tree/master/udagram-frontend
