@@ -36,10 +36,6 @@ public class UdagramRestController {
 	@Autowired
 	private FeedItemService feedItemService;
 	
-	public UdagramRestController(AccountUserService accountUserService) {
-		this.accountUserService = accountUserService;
-	}
-	
 	/*
 	 * User Authentication
 	 */
